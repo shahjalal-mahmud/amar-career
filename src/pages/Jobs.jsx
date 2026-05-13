@@ -12,12 +12,11 @@ const STATUS_COLORS = {
 export default function Jobs() {
   const { jobs, loading, createJob, updateJob, updateJobStatus, deleteJob } = useJobs()
 
-  const [formOpen, setFormOpen]   = useState(false)
-  const [editJob, setEditJob]     = useState(null)
-  const [isSaving, setIsSaving]   = useState(false)
+  const [formOpen, setFormOpen] = useState(false)
+  const [editJob, setEditJob]   = useState(null)
+  const [isSaving, setIsSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('All')
-  const [search, setSearch]       = useState('')
-  const [sourceFilter, setSourceFilter] = useState('')
+  const [search, setSearch]     = useState('')
 
   const openCreate = () => { setEditJob(null); setFormOpen(true) }
   const openEdit   = (job) => { setEditJob(job); setFormOpen(true) }
@@ -47,18 +46,16 @@ export default function Jobs() {
 
   const filtered = useMemo(() => {
     return jobs.filter((j) => {
-      const matchTab    = activeTab === 'All' || j.status === activeTab
-      const matchSource = !sourceFilter || j.jobSource === sourceFilter
+      const matchTab = activeTab === 'All' || j.status === activeTab
       const q = search.toLowerCase()
       const matchSearch = !q
         || j.jobTitle?.toLowerCase().includes(q)
         || j.companyName?.toLowerCase().includes(q)
-        || j.technicalSkills?.toLowerCase().includes(q)
-        || j.industry?.toLowerCase().includes(q)
-        || j.location?.toLowerCase().includes(q)
-      return matchTab && matchSource && matchSearch
+        || j.notes?.toLowerCase().includes(q)
+        || j.salary?.toLowerCase().includes(q)
+      return matchTab && matchSearch
     })
-  }, [jobs, activeTab, sourceFilter, search])
+  }, [jobs, activeTab, search])
 
   const counts = useMemo(() => {
     const c = {}
@@ -84,7 +81,9 @@ export default function Jobs() {
           <div>
             <p className="page-eyebrow">Manage</p>
             <h1 className="page-title">Job Applications</h1>
-            <p className="page-subtitle">{jobs.length} opportunit{jobs.length === 1 ? 'y' : 'ies'} tracked so far.</p>
+            <p className="page-subtitle">
+              {jobs.length} opportunit{jobs.length === 1 ? 'y' : 'ies'} tracked so far.
+            </p>
           </div>
           <button className="btn-primary" onClick={openCreate}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="15" height="15">
@@ -104,18 +103,12 @@ export default function Jobs() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by company, role, skill, location…"
+              placeholder="Search by company, role, salary, notes…"
             />
             {search && (
               <button className="search-clear" onClick={() => setSearch('')}>✕</button>
             )}
           </div>
-          <select className="filter-select" value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)}>
-            <option value="">All Sources</option>
-            {['LinkedIn', 'Bdjobs', 'Company Website', 'Facebook', 'Referral', 'Newspaper', 'Other'].map((s) => (
-              <option key={s}>{s}</option>
-            ))}
-          </select>
         </div>
 
         <div className="status-tabs">
@@ -148,7 +141,7 @@ export default function Jobs() {
               </p>
               <p className="empty-sub">
                 {jobs.length === 0
-                  ? 'Start by adding a job from LinkedIn, Bdjobs, or anywhere else.'
+                  ? 'Start by adding a job — takes less than a minute.'
                   : 'Try adjusting your search or filters.'}
               </p>
               {jobs.length === 0 && (
