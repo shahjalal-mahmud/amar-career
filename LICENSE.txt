@@ -1,13 +1,170 @@
-Copyright (c) 2024 Amar Career
+SOFTWARE LICENSE AGREEMENT
+for Amar Career - Job Hunt Management System
 
-PERSONAL USE ONLY
+Copyright (c) 2026
 
-This software is developed for personal use by the author. Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use the Software for personal, non-commercial purposes only, subject to the following conditions:
+This software is provided for PERSONAL USE ONLY.
 
-1. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+---
 
-2. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+PREAMBLE
 
-3. REDISTRIBUTION, MODIFICATION FOR PUBLIC USE, AND COMMERCIAL USE ARE STRICTLY PROHIBITED.
+This software ("Amar Career", "Job Hunt Management System", or "the Software") was created
+as a personal productivity tool for managing job applications. The author retains all
+rights to this Software. This License defines the terms under which the Software may be
+used, copied, modified, or distributed.
 
-For any inquiries, please contact the author.
+---
+
+1. GRANT OF PERSONAL USE LICENSE
+
+The author hereby grants you a non-exclusive, non-transferable, revocable license to:
+
+   a) Use the Software for your personal, non-commercial job search and career management
+      activities only.
+   
+   b) Modify the source code for your personal use only.
+   
+   c) Create a private instance of the Software for your sole use.
+
+2. PROHIBITED USES
+
+You may NOT:
+
+   a) Use the Software for any commercial purpose, including but not limited to:
+        - Offering job hunting services to others
+        - Selling access to the Software or any derivative work
+        - Using the Software as part of a paid product or service
+        - Using the Software for recruitment agency operations
+   
+   b) Distribute, sublicense, rent, lease, or transfer the Software to any third party.
+   
+   c) Deploy the Software as a public or multi-user application without explicit written
+      permission from the author.
+   
+   d) Remove or alter any copyright, trademark, or other proprietary notices contained
+      in the Software.
+   
+   e) Use the Software to store, process, or transmit:
+        - Sensitive personal information of third parties
+        - Passwords, credentials, or authentication tokens
+        - Financial account numbers or payment card information
+        - Protected health information
+        - Any data subject to legal or regulatory compliance requirements
+
+3. MODIFICATIONS AND DERIVATIVE WORKS
+
+You may modify the Software for your personal use. However:
+
+   a) Modified versions remain subject to all terms of this License.
+   b) You may not distribute modified versions to any third party.
+   c) Any modifications you make are for your personal use only.
+   d) You retain ownership of your modifications, but grant the original author an
+      irrevocable, royalty-free license to incorporate your modifications into the
+      original Software.
+
+4. SOURCE CODE ACCESS
+
+The source code of this Software is made available for transparency and personal
+modification. This access does not imply any right to redistribute the Software or
+use it beyond the terms specified in this License.
+
+5. DATA STORAGE AND PRIVACY
+
+   a) The Software does not collect or transmit any data to the author. All data
+      remains under your control in your chosen database (e.g., Firebase Firestore).
+   
+   b) You are solely responsible for:
+        - The security of your data
+        - Compliance with any applicable data protection laws
+        - Configuring appropriate database security rules
+        - Backing up your data
+   
+   c) The author has no access to, and assumes no responsibility for, any data you
+      store using the Software.
+
+6. THIRD-PARTY DEPENDENCIES
+
+The Software incorporates the following third-party components, each under its own
+license terms:
+
+   - React (MIT License)
+   - Firebase SDK (Apache License 2.0)
+   - Tailwind CSS (MIT License)
+   - Vite (MIT License)
+   - Google Fonts (SIL Open Font License)
+
+Your use of these components is governed by their respective licenses. The author
+makes no additional warranties regarding these components.
+
+7. DISCLAIMER OF WARRANTIES
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+THE AUTHOR DOES NOT WARRANT THAT:
+
+   a) The Software will meet your specific requirements
+   b) The Software will be uninterrupted, timely, secure, or error-free
+   c) The results obtained from using the Software will be accurate or reliable
+   d) Any errors in the Software will be corrected
+
+8. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+9. JOB APPLICATION SPECIFIC DISCLAIMER
+
+THE SOFTWARE IS A TRACKING TOOL ONLY. THE AUTHOR DOES NOT:
+
+   a) Guarantee job application success or interview invitations
+   b) Provide career advice or application strategy
+   c) Review or verify job postings stored in the Software
+   d) Assume responsibility for missed deadlines or application errors
+
+You remain solely responsible for submitting your job applications on time,
+verifying application requirements, and managing your job search.
+
+10. TERMINATION
+
+This License is effective until terminated. Your rights under this License will
+terminate automatically without notice if you fail to comply with any term of
+this License. Upon termination, you must cease all use of the Software and
+destroy all copies, full or partial, of the Software.
+
+11. GOVERNING LAW
+
+This License shall be governed by and construed in accordance with the laws
+of the jurisdiction where the author resides, without regard to its conflict
+of laws principles.
+
+12. ENTIRE AGREEMENT
+
+This License constitutes the entire agreement between you and the author
+regarding the Software and supersedes all prior agreements and understandings,
+whether written or oral.
+
+---
+
+ACKNOWLEDGMENT
+
+BY USING, COPYING, OR MODIFYING THE SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE
+READ THIS LICENSE, UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS.
+
+IF YOU DO NOT AGREE TO THESE TERMS, DO NOT USE, COPY, OR MODIFY THE SOFTWARE.
+
+---
+
+For permission requests, inquiries, or questions regarding this License,
+please contact the author through the project's GitHub repository.
+
+---
+
+Last Updated: May 2026
