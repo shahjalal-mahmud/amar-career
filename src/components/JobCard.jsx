@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 const STATUS_COLORS = {
   Saved:       { bg: 'rgba(148,163,184,0.12)', text: '#94a3b8', border: 'rgba(148,163,184,0.25)' },
   Applied:     { bg: 'rgba(96,165,250,0.12)',  text: '#60a5fa', border: 'rgba(96,165,250,0.25)'  },
@@ -11,22 +13,11 @@ const STATUSES = ['Saved', 'Applied', 'Shortlisted', 'Interview', 'Rejected', 'A
 
 function formatDate(iso) {
   if (!iso) return null
-  const d = new Date(iso)
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-}
-
-function deadlineDays(dateStr) {
-  if (!dateStr) return null
-  const diff = Math.ceil((new Date(dateStr) - new Date()) / (1000 * 60 * 60 * 24))
-  if (diff < 0) return { label: 'Deadline passed', urgent: true }
-  if (diff === 0) return { label: 'Due today!', urgent: true }
-  if (diff <= 3) return { label: `${diff}d left`, urgent: true }
-  return { label: `${diff}d left`, urgent: false }
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
   const color = STATUS_COLORS[job.status] || STATUS_COLORS.Saved
-  const dl = deadlineDays(job.deadline)
   const [showStatusMenu, setShowStatusMenu] = useState(false)
 
   return (
@@ -35,6 +26,7 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
       <div className="job-card-bar" style={{ background: color.text }} />
 
       <div className="job-card-body">
+
         {/* Top row */}
         <div className="job-card-top">
           <div className="job-card-meta-left">
@@ -75,17 +67,9 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
                 </div>
               )}
             </div>
-
-            {job.jobType && <span className="job-tag">{job.jobType}</span>}
-            {job.industry && <span className="job-tag">{job.industry}</span>}
           </div>
 
           <div className="job-card-actions">
-            {dl && (
-              <span className={`job-deadline ${dl.urgent ? 'job-deadline--urgent' : ''}`}>
-                🗓 {dl.label}
-              </span>
-            )}
             <button className="job-action-btn" onClick={() => onEdit(job)} title="Edit job">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -106,54 +90,51 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
         {/* Main info */}
         <div className="job-card-main">
           <h3 className="job-title">{job.jobTitle || 'Untitled Position'}</h3>
-          <p className="job-company">
-            {job.companyName || 'Unknown Company'}
-            {job.location && <span className="job-location"> · {job.location}</span>}
-          </p>
+          <p className="job-company">{job.companyName || 'Unknown Company'}</p>
         </div>
 
         {/* Detail chips */}
         <div className="job-card-chips">
-          {job.salaryRange && (
-            <span className="job-chip">💰 {job.salaryRange}</span>
+          {job.salary && (
+            <span className="job-chip">💰 {job.salary}</span>
           )}
-          {job.experienceLevel && (
-            <span className="job-chip">📊 {job.experienceLevel}</span>
+          {job.circularLink && (
+            <a
+              href={job.circularLink.startsWith('http') ? job.circularLink : `https://${job.circularLink}`}
+              target="_blank"
+              rel="noreferrer"
+              className="job-chip job-chip-link"
+              onClick={(e) => e.stopPropagation()}
+            >
+              📄 Circular
+            </a>
           )}
-          {job.jobSource && (
-            <span className="job-chip">🔗 {job.jobSource}</span>
-          )}
-          {job.deadline && (
-            <span className="job-chip">📅 Deadline: {job.deadline}</span>
+          {job.companyWebsite && (
+            <a
+              href={job.companyWebsite.startsWith('http') ? job.companyWebsite : `https://${job.companyWebsite}`}
+              target="_blank"
+              rel="noreferrer"
+              className="job-chip job-chip-link"
+              onClick={(e) => e.stopPropagation()}
+            >
+              🌐 Website
+            </a>
           )}
         </div>
 
-        {/* Skills preview */}
-        {job.technicalSkills && (
+        {/* Notes preview */}
+        {job.notes && (
           <p className="job-skills-preview">
-            🛠 {job.technicalSkills.split('\n').join(', ').substring(0, 100)}
-            {job.technicalSkills.length > 100 && '…'}
+            📝 {job.notes.substring(0, 120)}{job.notes.length > 120 && '…'}
           </p>
         )}
 
         {/* Footer */}
         <div className="job-card-footer">
           <span className="job-added">Added {formatDate(job.createdAt)}</span>
-          {job.submissionLink && (
-            <a
-              href={job.submissionLink.startsWith('http') ? job.submissionLink : `https://${job.submissionLink}`}
-              target="_blank"
-              rel="noreferrer"
-              className="job-apply-link"
-            >
-              Apply →
-            </a>
-          )}
         </div>
+
       </div>
     </div>
   )
 }
-
-// useState needs to be imported in the same file
-import { useState } from 'react'
