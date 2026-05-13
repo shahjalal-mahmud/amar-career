@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { renderMarkdown } from './JobForm'
 
 const STATUS_COLORS = {
   Saved:       { bg: 'rgba(148,163,184,0.12)', text: '#94a3b8', border: 'rgba(148,163,184,0.25)' },
@@ -19,54 +20,55 @@ function formatDate(iso) {
 export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
   const color = STATUS_COLORS[job.status] || STATUS_COLORS.Saved
   const [showStatusMenu, setShowStatusMenu] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+
+  const handleCopyMarkdown = () => {
+    navigator.clipboard.writeText(job.notes || '')
+    alert('✅ Markdown content copied to clipboard!')
+  }
 
   return (
     <div className="job-card">
-      {/* Left accent bar */}
       <div className="job-card-bar" style={{ background: color.text }} />
 
       <div className="job-card-body">
-
         {/* Top row */}
         <div className="job-card-top">
-          <div className="job-card-meta-left">
-            {/* Status badge — clickable */}
-            <div className="job-status-wrap">
-              <button
-                className="job-status-badge"
-                style={{ background: color.bg, color: color.text, borderColor: color.border }}
-                onClick={() => setShowStatusMenu((v) => !v)}
-                title="Change status"
-              >
-                {job.status}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="10" height="10">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
+          <div className="job-status-wrap">
+            <button
+              className="job-status-badge"
+              style={{ background: color.bg, color: color.text, borderColor: color.border }}
+              onClick={() => setShowStatusMenu((v) => !v)}
+              title="Change status"
+            >
+              {job.status}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="10" height="10">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
 
-              {showStatusMenu && (
-                <div className="status-dropdown">
-                  {STATUSES.map((s) => {
-                    const c = STATUS_COLORS[s]
-                    return (
-                      <button
-                        key={s}
-                        className={`status-option ${job.status === s ? 'status-option--active' : ''}`}
-                        style={{ '--opt-color': c.text }}
-                        onClick={() => {
-                          onStatusChange(job.id, s)
-                          setShowStatusMenu(false)
-                        }}
-                      >
-                        <span className="status-option-dot" style={{ background: c.text }} />
-                        {s}
-                        {job.status === s && ' ✓'}
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
+            {showStatusMenu && (
+              <div className="status-dropdown">
+                {STATUSES.map((s) => {
+                  const c = STATUS_COLORS[s]
+                  return (
+                    <button
+                      key={s}
+                      className={`status-option ${job.status === s ? 'status-option--active' : ''}`}
+                      style={{ '--opt-color': c.text }}
+                      onClick={() => {
+                        onStatusChange(job.id, s)
+                        setShowStatusMenu(false)
+                      }}
+                    >
+                      <span className="status-option-dot" style={{ background: c.text }} />
+                      {s}
+                      {job.status === s && ' ✓'}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           <div className="job-card-actions">
@@ -91,6 +93,30 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
         <div className="job-card-main">
           <h3 className="job-title">{job.jobTitle || 'Untitled Position'}</h3>
           <p className="job-company">{job.companyName || 'Unknown Company'}</p>
+          
+          {/* Job Type & Location badges */}
+          <div className="job-meta-badges">
+            {job.jobType && (
+              <span className="job-meta-badge">
+                💼 {job.jobType}
+              </span>
+            )}
+            {job.location && (
+              <span className="job-meta-badge">
+                📍 {job.location}
+              </span>
+            )}
+            {job.cvLink && (
+              <a 
+                href={job.cvLink} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="job-meta-badge job-meta-link"
+              >
+                📄 CV Version
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Detail chips */}
@@ -122,18 +148,40 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
           )}
         </div>
 
-        {/* Notes preview */}
+        {/* Notes section with expand/collapse and copy button */}
         {job.notes && (
-          <p className="job-skills-preview">
-            📝 {job.notes.substring(0, 120)}{job.notes.length > 120 && '…'}
-          </p>
+          <div className="job-notes-section">
+            <div className="job-notes-header">
+              <span className="job-notes-label">📋 Job Details (Markdown)</span>
+              <div className="job-notes-buttons">
+                <button className="job-notes-btn" onClick={handleCopyMarkdown} title="Copy markdown text">
+                  📋 Copy Markdown
+                </button>
+                <button className="job-notes-btn" onClick={() => setExpanded(!expanded)} title={expanded ? "Collapse" : "Expand"}>
+                  {expanded ? '▼ Collapse' : '▶ Expand'}
+                </button>
+              </div>
+            </div>
+            {expanded ? (
+              <div 
+                className="job-notes-expanded" 
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(job.notes) }}
+              />
+            ) : (
+              <div 
+                className="job-notes-preview" 
+                dangerouslySetInnerHTML={{ 
+                  __html: renderMarkdown(job.notes.substring(0, 200) + (job.notes.length > 200 ? '…' : ''))
+                }}
+              />
+            )}
+          </div>
         )}
 
         {/* Footer */}
         <div className="job-card-footer">
           <span className="job-added">Added {formatDate(job.createdAt)}</span>
         </div>
-
       </div>
     </div>
   )
