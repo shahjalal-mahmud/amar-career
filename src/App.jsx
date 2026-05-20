@@ -5,6 +5,7 @@ import Jobs from './pages/Jobs'
 import Profile from './pages/Profile'
 import Analytics from './pages/Analytics'
 import Notes from './pages/Notes'
+import Companies from './pages/Companies'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
@@ -18,6 +19,7 @@ export default function App() {
   const pages = {
     dashboard: <Dashboard onNavigate={navigate} />,
     jobs:      <Jobs />,
+    companies: <Companies />,
     profile:   <Profile />,
     analytics: <Analytics />,
     notes:     <Notes />,
