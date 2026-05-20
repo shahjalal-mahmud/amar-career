@@ -15,7 +15,7 @@ export const profile = {
     companyRole: 'Founder & Lead Engineer',
     status: 'Open to opportunities',
     statusActive: true,
-    cgpa: '3.98 / 4.00',
+    cgpa: '3.90 / 4.00',
     university: 'Northern University of Business & Technology Khulna',
     graduationYear: '2027 (Expected)',
   },
@@ -46,7 +46,7 @@ Currently deepening expertise in multi-tenant backend architecture, on-device AI
 
   /* ─────────────────────────── HERO STATS ─────────────────────────── */
   stats: [
-    { id: 'cgpa',     value: '3.98',   unit: '/4.00', label: 'CGPA',            icon: '🎓', color: '#f59e0b' },
+    { id: 'cgpa',     value: '3.90',   unit: '/4.00', label: 'CGPA',            icon: '🎓', color: '#f59e0b' },
     { id: 'projects', value: '15+',    unit: '',      label: 'Projects Shipped', icon: '🚀', color: '#34d399' },
     { id: 'hackathon',value: 'Top 100',unit: '',      label: 'SOLVIO AI 2025',  icon: '🏆', color: '#818cf8' },
     { id: 'uptime',   value: '99.9%',  unit: '',      label: 'Crash-Free Rate', icon: '⚡', color: '#f59e0b' },
@@ -319,7 +319,7 @@ Currently deepening expertise in multi-tenant backend architecture, on-device AI
       institution: 'Northern University of Business & Technology Khulna',
       shortName: 'NUBTK',
       period: '2023 – 2027 (Expected)',
-      cgpa: '3.98 / 4.00',
+      cgpa: '3.90 / 4.00',
       status: 'Ongoing',
       coursework: [
         'Data Structures & Algorithms',
@@ -330,7 +330,7 @@ Currently deepening expertise in multi-tenant backend architecture, on-device AI
         'Object-Oriented Programming',
       ],
       highlights: [
-        'Top of cohort CGPA: 3.98/4.00',
+        'Top of cohort CGPA: 3.90/4.00',
         'Active competitive programmer (LeetCode, Codeforces)',
         'Founder of an IT firm while maintaining academic excellence',
       ],
@@ -351,7 +351,7 @@ Currently deepening expertise in multi-tenant backend architecture, on-device AI
     },
     {
       id: 'cgpa',
-      title: 'CGPA 3.98 / 4.00',
+      title: 'CGPA 3.90 / 4.00',
       event: 'CSE Department — NUBTK',
       description: 'Maintaining near-perfect academic performance while simultaneously building and shipping production software products as a founder.',
       year: '2023–Present',

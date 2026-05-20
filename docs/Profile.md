@@ -41,7 +41,7 @@
 
 **Northern University of Business & Technology Khulna (NUBTK)**  
 📅 2023 — Expected 2027  
-📊 CGPA: **3.98 / 4.00**
+📊 CGPA: **3.90 / 4.00**
 
 **Key Coursework:**
 
@@ -447,7 +447,7 @@ Simulation of Dijkstra's Banker's Algorithm with safety state checking and step-
 | 🏆 Top 100 National Finalist | SOLVIO AI Hackathon 2025 — CashGuard AI                       | 2025    |
 | 🏗️ Founder                   | Appriyo — solo technical founder, shipping production systems | 2025    |
 | 📱 99.9% Crash-free Rate     | Production Android apps in live user environment              | 2025    |
-| 🎓 CGPA 3.98 / 4.00          | Northern University of Business & Technology Khulna           | Ongoing |
+| 🎓 CGPA 3.90 / 4.00          | Northern University of Business & Technology Khulna           | Ongoing |
 | 🔓 Open Source Contributor   | Merged PRs in GitHub Insights (TypeScript, GraphQL)           | 2024    |
 | 🏦 JPMorgan Chase Forage     | Completed Midas simulation program                            | 2025    |
 
@@ -495,7 +495,7 @@ End-to-end ownership, solo product delivery, system design, client-facing delive
 
 ### Internship Profile Highlights
 
-- CGPA 3.98/4.00 at CSE
+- CGPA 3.90/4.00 at CSE
 - Active competitive programming (LeetCode + CodeForces)
 - Real production experience (not just academic projects)
 - Hackathon finalist (SOLVIO AI 2025)
@@ -511,7 +511,7 @@ When using this document to generate a tailored CV:
 2. **Select projects** — pick 3–4 most relevant projects only; always include quantified results where available
 3. **Select skills** — match the JD's tech stack from the full skills inventory above
 4. **Tailor the summary** — rewrite the professional summary to mirror the role's language
-5. **Education** — always include CGPA (3.98/4.00) as it is a strong differentiator
+5. **Education** — always include CGPA (3.90/4.00) as it is a strong differentiator
 6. **Achievements** — include hackathon result for engineering roles; open source for collaborative roles
 7. **Keep to 1 page** for internship roles; 1–2 pages for full-time roles
 8. **ATS optimization** — use exact keywords from the JD in skills and bullet points
