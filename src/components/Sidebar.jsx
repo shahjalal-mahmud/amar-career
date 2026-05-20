@@ -1,3 +1,5 @@
+import logo from '../assets/icon.png'
+
 const NAV_ITEMS = [
   {
     id: 'dashboard',
@@ -70,13 +72,8 @@ export default function Sidebar({ currentPage, onNavigate, isOpen, onClose }) {
     <aside className={`sidebar ${isOpen ? 'sidebar--open' : ''}`}>
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="logo-mark">
-          <svg viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="15" stroke="var(--accent)" strokeWidth="2" />
-            <path d="M10 20 L16 10 L22 20" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            <line x1="11.5" y1="17" x2="20.5" y2="17" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </div>
+        <img src={logo} alt="Amar Career Logo" width="32" height="32" />
+        
         <div className="logo-text">
           <span className="logo-bn">আমার ক্যারিয়ার</span>
           <span className="logo-en">Amar Career</span>
