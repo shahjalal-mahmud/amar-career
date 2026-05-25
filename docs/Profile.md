@@ -147,8 +147,6 @@ Appriyo is my own IT firm where I design, build, and ship production software sy
 
 ### Backend Development
 
-- **Node.js** — REST API development, middleware, routing
-- **TypeScript** (Node) — typed backend services
 - **Prisma ORM** — schema definition, migrations, query building
 - **PostgreSQL** — relational database design, multi-tenant schema
 - **Spring Boot** — Java-based REST APIs (JPMorgan simulation)
@@ -518,7 +516,7 @@ Also: Spring Boot, Kafka, JPA (via JPMorgan simulation)
 
 ### Full-Stack Engineering
 
-React + Vite + Tailwind (frontend) + Node.js + PostgreSQL (backend) + Firebase + Netlify/serverless deployment
+React + Vite + Tailwind (frontend) + PostgreSQL (backend) + Firebase + Netlify/serverless deployment
 
 ### Founding / Startup Engineering
 
