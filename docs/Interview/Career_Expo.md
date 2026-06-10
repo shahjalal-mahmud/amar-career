@@ -146,7 +146,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 **Answer:**
 
-"An API is a way for two systems to communicate. One system sends a request, and the other returns a response — usually in JSON format. Yes, I've worked with APIs a lot. I've built REST APIs using Spring Boot and also consumed APIs in my Android apps — including Firebase and OpenRouter for AI features."
+"An API(Application Programming Interface) is a way for two systems to communicate. One system sends a request, and the other returns a response — usually in JSON format. Yes, I've worked with APIs a lot. I've built REST APIs using Spring Boot and also consumed APIs in my Android apps — including Firebase and OpenRouter for AI features."
 
 ---
 
@@ -154,7 +154,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 **Answer:**
 
-"REST is a standard style of designing APIs. It uses HTTP methods — GET for reading, POST for creating, PUT or PATCH for updating, DELETE for removing data. The server is stateless, meaning each request contains all the information needed. I've built REST APIs for my SaaS products."
+"REST(Representational State Transfer) is a standard style of designing APIs. It uses HTTP methods — GET for reading, POST for creating, PUT or PATCH for updating, DELETE for removing data. The server is stateless, meaning each request contains all the information needed. I've built REST APIs for my SaaS products."
 
 ---
 
@@ -266,15 +266,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 30. What is AlgoViz?
-
-**Answer:**
-
-"AlgoViz is a VS Code extension I built that visualizes algorithms — like sorting and graph traversal — step by step inside the code editor. It also detects the time complexity of code empirically. It's built with TypeScript and Python and uses the VS Code WebView API."
-
----
-
-### 31. What is multi-tenant architecture?
+### 30. What is multi-tenant architecture?
 
 **Answer:**
 
@@ -282,7 +274,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 32. What is the JPMorgan Chase simulation you listed?
+### 31. What is the JPMorgan Chase simulation you listed?
 
 **Answer:**
 
@@ -290,7 +282,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 33. What is the bdapps National Android Bootcamp?
+### 32. What is the bdapps National Android Bootcamp?
 
 **Answer:**
 
@@ -298,7 +290,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 34. What is offline-first architecture?
+### 33. What is offline-first architecture?
 
 **Answer:**
 
@@ -306,7 +298,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 35. You're only a 3rd-year student. Can you actually handle real work?
+### 34. You're only a 3rd-year student. Can you actually handle real work?
 
 **Answer:**
 
@@ -318,7 +310,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 36. Tell me about a challenge you faced and how you solved it.
+### 35. Tell me about a challenge you faced and how you solved it.
 
 **Answer:**
 
@@ -326,7 +318,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 37. Tell me about a time you worked in a team.
+### 36. Tell me about a time you worked in a team.
 
 **Answer:**
 
@@ -334,7 +326,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 38. Tell me about a time you failed.
+### 37. Tell me about a time you failed.
 
 **Answer:**
 
@@ -342,7 +334,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 39. How do you keep up with new technology?
+### 38. How do you keep up with new technology?
 
 **Answer:**
 
@@ -350,7 +342,7 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 
 ---
 
-### 40. Are you currently working anywhere?
+### 39. Are you currently working anywhere?
 
 **Answer:**
 
@@ -401,6 +393,6 @@ I'm not looking for a full-time job right now — I'm looking for an internship 
 | Hackathon           | Top 100 — SOLVIO AI Hackathon 2025                  |
 | Bootcamp            | National Android Bootcamp 2026 (bdapps)             |
 | GitHub              | github.com/shahjalal-mahmud                         |
-| Portfolio           | shahajalal.me                        |
+| Portfolio           | shahajalal.me                                       |
 
 ---
