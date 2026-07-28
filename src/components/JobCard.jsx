@@ -55,7 +55,7 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(job.notes || '')
+    navigator.clipboard.writeText(job.details || '')
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -302,51 +302,38 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
               <p className="job-company">{job.companyName || 'Unknown Company'}</p>
             </div>
 
-            {/* Type / location / CV badges */}
-            {(job.jobType || job.location || job.cvLink) && (
+            {/* Type / location / CV filename badges */}
+            {(job.jobType || job.location || job.cvFileName) && (
               <div className="job-badges">
                 {job.jobType && <span className="job-badge">💼 {job.jobType}</span>}
                 {job.location && <span className="job-badge">📍 {job.location}</span>}
-                {job.cvLink && (
-                  <a href={job.cvLink} target="_blank" rel="noreferrer" className="job-badge">
-                    📄 CV Version
-                  </a>
+                {job.cvFileName && (
+                  <span className="job-badge" title="CV version submitted for this job">
+                    📄 CV: {job.cvFileName}
+                  </span>
                 )}
               </div>
             )}
 
-            {/* Salary / circular / website chips */}
-            {(job.salary || job.circularLink || job.companyWebsite) && (
+            {/* Circular link chip */}
+            {job.circularLink && (
               <div className="job-chips">
-                {job.salary && <span className="job-chip">💰 {job.salary}</span>}
-                {job.circularLink && (
-                  <a
-                    href={job.circularLink.startsWith('http') ? job.circularLink : `https://${job.circularLink}`}
-                    target="_blank" rel="noreferrer"
-                    className="job-chip"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <IconLink /> Circular
-                  </a>
-                )}
-                {job.companyWebsite && (
-                  <a
-                    href={job.companyWebsite.startsWith('http') ? job.companyWebsite : `https://${job.companyWebsite}`}
-                    target="_blank" rel="noreferrer"
-                    className="job-chip"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <IconLink /> Website
-                  </a>
-                )}
+                <a
+                  href={job.circularLink.startsWith('http') ? job.circularLink : `https://${job.circularLink}`}
+                  target="_blank" rel="noreferrer"
+                  className="job-chip"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <IconLink /> Circular
+                </a>
               </div>
             )}
 
-            {/* Notes */}
-            {job.notes && (
+            {/* Details */}
+            {job.details && (
               <div className="job-notes">
                 <div className="job-notes-header">
-                  <span className="job-notes-label">📋 Notes</span>
+                  <span className="job-notes-label">📋 Details</span>
                   <div className="job-notes-actions">
                     <button className="notes-btn" onClick={handleCopy}>
                       <IconCopy />
@@ -361,8 +348,8 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
                   className="notes-body"
                   dangerouslySetInnerHTML={{
                     __html: expanded
-                      ? renderMarkdown(job.notes)
-                      : renderMarkdown(job.notes.substring(0, 180) + (job.notes.length > 180 ? '…' : ''))
+                      ? renderMarkdown(job.details)
+                      : renderMarkdown(job.details.substring(0, 180) + (job.details.length > 180 ? '…' : ''))
                   }}
                 />
               </div>

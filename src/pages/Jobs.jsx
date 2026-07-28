@@ -53,8 +53,8 @@ export default function Jobs() {
         || j.companyName?.toLowerCase().includes(q)
         || j.jobType?.toLowerCase().includes(q)
         || j.location?.toLowerCase().includes(q)
-        || j.notes?.toLowerCase().includes(q)
-        || j.salary?.toLowerCase().includes(q)
+        || j.cvFileName?.toLowerCase().includes(q)
+        || j.details?.toLowerCase().includes(q)
       return matchTab && matchSearch
     })
   }, [jobs, activeTab, search])
@@ -105,7 +105,7 @@ export default function Jobs() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by company, role, type, location, salary, notes…"
+              placeholder="Search by company, role, type, location, CV, details…"
             />
             {search && (
               <button className="search-clear" onClick={() => setSearch('')}>✕</button>

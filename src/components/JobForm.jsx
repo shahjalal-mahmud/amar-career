@@ -6,10 +6,8 @@ const EMPTY_FORM = {
   jobType: '',
   location: '',
   circularLink: '',
-  companyWebsite: '',
-  salary: '',
-  cvLink: '',
-  notes: '',
+  cvFileName: '',
+  details: '',
 }
 
 const JOB_TYPES = ['Full-time', 'Part-time', 'Remote', 'Hybrid', 'On-site', 'Internship', 'Contract', 'Freelance']
@@ -154,9 +152,9 @@ function MarkdownEditor({ value, onChange }) {
         borderRadius: '10px 10px 0 0',
       }}>
         <span style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--label-color)' }}>
-          Notes
+          Details
           <span style={{ fontSize: '11px', fontWeight: '400', textTransform: 'none', letterSpacing: 0, color: 'var(--hint-color)', marginLeft: '8px' }}>
-            supports Markdown · paste job post, requirements, deadlines
+            Markdown · salary, deadline, requirements, anything else
           </span>
         </span>
         <div style={{ display: 'flex', gap: '2px', background: 'var(--tab-bg)', borderRadius: '7px', padding: '2px' }}>
@@ -194,7 +192,7 @@ function MarkdownEditor({ value, onChange }) {
           }}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={`## Requirements\n- 2+ years React experience\n- Strong communication\n\n## Responsibilities\n- Build and ship features\n\n**Deadline:** June 30, 2025`}
+          placeholder={`## Requirements\n- 2+ years React experience\n- Strong communication\n\n## Responsibilities\n- Build and ship features\n\n**Salary:** 30,000–45,000 BDT/mo\n**Deadline:** June 30, 2025`}
           rows={8}
           spellCheck={false}
           onFocus={() => setFocused(true)}
@@ -432,29 +430,21 @@ export default function JobForm({ initialData, onSave, onCancel, isSaving }) {
               </div>
             </div>
 
-            {/* Links */}
+            {/* CV & Link */}
             <div className="jf-section">
-              <div className="jf-section-label">Links & Salary</div>
+              <div className="jf-section-label">CV & Link</div>
               <div className="jf-grid-2">
                 <Field label="Job Circular" hint="URL">
                   <Input value={form.circularLink} onChange={set('circularLink')} placeholder="https://bdjobs.com/…" />
                 </Field>
-                <Field label="Company Website" hint="optional">
-                  <Input value={form.companyWebsite} onChange={set('companyWebsite')} placeholder="https://company.com" />
-                </Field>
-              </div>
-              <div className="jf-grid-2">
-                <Field label="Salary" hint="from circular">
-                  <Input value={form.salary} onChange={set('salary')} placeholder="e.g. 30,000–45,000 BDT/mo" />
-                </Field>
-                <Field label="CV / Resume Link" hint="GitHub URL">
-                  <Input value={form.cvLink} onChange={set('cvLink')} placeholder="https://github.com/you/cv/…" />
+                <Field label="CV Filename" hint="label only">
+                  <Input value={form.cvFileName} onChange={set('cvFileName')} placeholder="e.g. CV_Backend_v3.pdf" />
                 </Field>
               </div>
             </div>
 
-            {/* Notes */}
-            <MarkdownEditor value={form.notes} onChange={set('notes')} />
+            {/* Details (markdown) */}
+            <MarkdownEditor value={form.details} onChange={set('details')} />
 
           </div>
 
