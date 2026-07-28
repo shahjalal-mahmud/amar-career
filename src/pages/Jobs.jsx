@@ -2,12 +2,7 @@ import { useState, useMemo } from 'react'
 import { useJobs } from '../hooks/useJobs'
 import JobForm from '../components/JobForm'
 import JobCard from '../components/JobCard'
-
-const STATUS_TABS = ['All', 'Saved', 'Applied', 'Shortlisted', 'Interview', 'Rejected', 'Accepted']
-const STATUS_COLORS = {
-  Saved: '#94a3b8', Applied: '#60a5fa', Shortlisted: '#fbbf24',
-  Interview: '#34d399', Rejected: '#f87171', Accepted: '#a78bfa',
-}
+import { STATUS_TABS, STATUS_COLORS } from '../constants'
 
 export default function Jobs() {
   const { jobs, loading, createJob, updateJob, updateJobStatus, deleteJob } = useJobs()

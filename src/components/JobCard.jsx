@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { renderMarkdown } from './JobForm'
+import { statusStyle } from '../constants'
 
 const STATUS = {
-  Saved:       { bg: 'rgba(148,163,184,0.1)', text: '#94a3b8', border: 'rgba(148,163,184,0.2)', dot: '#94a3b8' },
-  Applied:     { bg: 'rgba(96,165,250,0.1)',  text: '#60a5fa', border: 'rgba(96,165,250,0.2)',  dot: '#60a5fa' },
-  Shortlisted: { bg: 'rgba(251,191,36,0.1)',  text: '#fbbf24', border: 'rgba(251,191,36,0.2)',  dot: '#fbbf24' },
-  Interview:   { bg: 'rgba(52,211,153,0.1)',  text: '#34d399', border: 'rgba(52,211,153,0.2)',  dot: '#34d399' },
-  Rejected:    { bg: 'rgba(248,113,113,0.1)', text: '#f87171', border: 'rgba(248,113,113,0.2)', dot: '#f87171' },
-  Accepted:    { bg: 'rgba(167,139,250,0.1)', text: '#a78bfa', border: 'rgba(167,139,250,0.2)', dot: '#a78bfa' },
+  Saved:       statusStyle('Saved'),
+  Applied:     statusStyle('Applied'),
+  Shortlisted: statusStyle('Shortlisted'),
+  Interview:   statusStyle('Interview'),
+  Rejected:    statusStyle('Rejected'),
+  Accepted:    statusStyle('Accepted'),
 }
 const STATUSES = Object.keys(STATUS)
 
