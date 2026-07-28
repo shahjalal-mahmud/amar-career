@@ -1,438 +1,272 @@
-# আমার ক্যারিয়ার — Amar Career
+# Amar Career
 
-> **A personal job hunt management system built to bring order, clarity, and strategy to the job application process.**
+> আমার ক্যারিয়ার — a personal job-hunt tracker.
 
-![Version](https://img.shields.io/badge/version-0.1.0-f59e0b?style=flat-square)
-![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react)
-![Firebase](https://img.shields.io/badge/Firebase-Firestore-ff6d00?style=flat-square&logo=firebase)
-![Tailwind](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss)
-![Vite](https://img.shields.io/badge/Vite-8-646cff?style=flat-square&logo=vite)
-![License](https://img.shields.io/badge/license-Personal-94a3b8?style=flat-square)
+A small, single-user web app for tracking job applications, target companies,
+interview notes, and a personal profile you can paste into an AI to draft a
+tailored CV.
 
----
+Built for one person (the author). Open source under MIT so anyone can clone
+it, plug in their own Firebase config, and run their own copy for their own
+job hunt.
 
-## 📖 What Is This?
-
-**Amar Career** (আমার ক্যারিয়ার, meaning _My Career_ in Bengali) is a private, personal web application designed to solve a very real problem: managing multiple job applications across different platforms while keeping everything — job details, deadlines, preparation notes, and application history — organized in one central place.
-
-The idea came from the frustration of hunting for jobs across LinkedIn, Bdjobs, company websites, and Facebook groups, then losing track of what was applied to, when, with what CV version, and what the outcome was. Amar Career is the answer to that chaos.
-
-This is **not a public product**. It is a personal productivity tool, built by one person for one person, to track their own career journey, analyze patterns, and improve over time.
+It is **not** a multi-user SaaS, **not** a hosted product, and **not** an ATS
+in the conventional sense.
 
 ---
 
-## ✨ Features
+## Table of contents
 
-### ✅ Currently Built
-
-- **Job Management** — Create, edit, and delete job entries with 30+ structured fields covering every aspect of a job posting
-- **7-Section Smart Form** — Multi-step tabbed form (Basic Info → Overview → Role Details → Qualifications → Compensation → Application Process → Selection Process)
-- **Job Status Tracking** — Mark jobs as `Saved`, `Applied`, `Shortlisted`, `Interview`, `Rejected`, or `Accepted` with a single click
-- **Inline Status Change** — Click any status badge on a job card to instantly change status via a dropdown
-- **Live Dashboard** — Real-time stats (jobs saved, applied, interviews, rejections) and pipeline visualization
-- **Job Cards** — Clean information cards showing all key details at a glance, with deadline countdowns
-- **Search & Filter** — Search by company, role, skills, or location; filter by job source and status tab
-- **Real-time Sync** — Firestore real-time listener means data updates instantly across tabs without refresh
-- **Responsive Layout** — Sidebar nav on desktop, hamburger menu on mobile
-
-### 🔜 Planned (Upcoming)
-
-- **Profile Management** — Store personal skills, portfolio links, GitHub, LinkedIn, education, and contact info
-- **AI Analysis Storage** — Save AI-generated match percentages, strength/weakness analysis, and recommendations per job
-- **Notes & Preparation** — Interview questions, preparation notes, mistakes, and role-specific materials
-- **Analytics Dashboard** — Application timeline, success rate, source effectiveness, response rate charts
-- **Job Detail View** — Full-page view for a single job with all sections expanded
-- **CV Link Tracking** — Store GitHub/Drive links to the exact CV version submitted per application
+- [Amar Career](#amar-career)
+  - [Table of contents](#table-of-contents)
+  - [What it does](#what-it-does)
+  - [What it deliberately does not do](#what-it-deliberately-does-not-do)
+  - [Tech stack](#tech-stack)
+  - [Quick start](#quick-start)
+  - [Firestore setup](#firestore-setup)
+    - [Optional: seed legacy profile data](#optional-seed-legacy-profile-data)
+  - [Project structure](#project-structure)
+  - [Data model](#data-model)
+  - [Scripts](#scripts)
+  - [Self-hosting notes](#self-hosting-notes)
+  - [Security](#security)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ---
 
-## 🛠 Tech Stack
+## What it does
 
-| Technology             | Purpose                    | Why Chosen                                                  |
-| ---------------------- | -------------------------- | ----------------------------------------------------------- |
-| **React 19**           | Frontend UI                | Component model, fast re-renders, hooks-based state         |
-| **Vite 8**             | Build tool & dev server    | Instant HMR, modern ESM bundling                            |
-| **Tailwind CSS v4**    | Utility styling foundation | Rapid layout utilities alongside custom CSS                 |
-| **Firebase Firestore** | Cloud database             | Free tier, real-time listeners, no backend needed           |
-| **Google Fonts**       | Typography                 | Syne (display), DM Sans (body), Noto Serif Bengali (script) |
-| **Vercel** _(planned)_ | Deployment                 | Free hosting, git-based deploys                             |
+Six pages, each doing one job:
 
-> **Cost**: $0. The entire stack runs on free tiers. No Firebase Storage is used (paid). All data stored as text in Firestore.
+- **Dashboard** — quick stats, last 5 applications, pipeline breakdown, quick
+  actions.
+- **Jobs** — every application you've saved. Filter by status, search across
+  fields. Per-job card shows status, type, location, the CV filename you used,
+  the original circular link, and a markdown "details" dump for everything
+  else (salary, deadlines, requirements, follow-ups, anything).
+- **Target Companies** — places you want to check regularly for new postings.
+  Each entry has a category, country, website, a review cycle (7 / 15 / 30
+  days), and a "Mark Checked" button that updates a `lastChecked` timestamp.
+  A badge tells you when it's due for a re-check.
+- **Notes** — a small markdown notebook with four fixed categories:
+  _Tips_, _Interview Questions_, _Preparation Notes_, _Mistakes & Learnings_.
+  Search across title and content.
+- **Profile** — a personal knowledge base. Editable hero info plus a list of
+  blocks grouped by section (Personal Info, Skills, Experience, Education,
+  Projects, Certifications, Achievements). Each block is a title plus
+  markdown content. A **Copy All as Markdown** button flattens everything
+  into a single document and copies it to your clipboard, ready to paste
+  into an AI chat when you want to draft a role-specific CV.
+- **Analytics** — four ratios and a per-status count breakdown. No graphs,
+  no date filters. Just numbers.
 
----
+Real-time sync across tabs via Firestore `onSnapshot`. No manual refresh.
 
-## 📁 Project Structure
+## What it deliberately does not do
 
-```
-amar-career/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── firebase.js               # Firebase app init & Firestore export
-│   ├── main.jsx                  # React root mount
-│   ├── App.jsx                   # Shell: layout, routing, sidebar state
-│   ├── index.css                 # Full design system (tokens, components, layout)
-│   ├── App.css                   # Minimal app-level resets
-│   │
-│   ├── hooks/
-│   │   └── useJobs.js            # Firestore CRUD hook (create, read, update, delete, status)
-│   │
-│   ├── components/
-│   │   ├── Sidebar.jsx           # Navigation sidebar with active state
-│   │   ├── JobForm.jsx           # Multi-section job create/edit form modal
-│   │   └── JobCard.jsx           # Job list card with status dropdown
-│   │
-│   └── pages/
-│       ├── Dashboard.jsx         # Overview: stats, pipeline, recent jobs, quick actions
-│       ├── Jobs.jsx              # Job list with search, filter, tabs
-│       ├── Profile.jsx           # Personal profile (shell — in progress)
-│       ├── Analytics.jsx         # Statistics & charts (shell — in progress)
-│       └── Notes.jsx             # Preparation notes (shell — in progress)
-│
-├── index.html
-├── vite.config.js
-├── package.json
-└── README.md
-```
+This is a personal tool, kept small on purpose. Out of scope:
 
----
+- **No authentication.** See [Security](#security).
+- **No multi-user support.** Single-user by design.
+- **No CV file upload.** The `cvFileName` field on a job is a free-text label
+  (e.g. `CV_Backend_v3.pdf`) you match against files you keep locally or in
+  Google Drive. The app never sees the file.
+- **No charts, no graphs, no PDF / CSV export.**
+- **No PWA / service worker / offline mode.**
+- **No light theme.** Dark only.
+- **No deployment configuration in this repo.** Clone it, run it locally, or
+  deploy the `dist/` build yourself however you like.
 
-## 🚀 Getting Started
+The full list of intentional non-features lives in [`Project.md`](./Project.md) §6.
 
-### Prerequisites
+## Tech stack
 
-- **Node.js** v18 or later
-- **npm** v9 or later
-- A **Firebase** account (free) — [console.firebase.google.com](https://console.firebase.google.com)
+| Layer     | Choice                                                       |
+| --------- | ------------------------------------------------------------ |
+| Framework | React 19 (functional components, hooks only)                 |
+| Build     | Vite 8                                                       |
+| Styling   | Tailwind CSS v4 + a small custom dark design system in CSS   |
+| Routing   | `useState`-based page switching (no React Router)            |
+| Database  | Firebase Firestore v12, real-time via `onSnapshot`           |
+| Storage   | None                                                         |
+| Auth      | None                                                         |
+| Markdown  | Small custom regex renderer (no `react-markdown` dependency) |
 
----
+Only five runtime dependencies: `@tailwindcss/vite`, `firebase`, `react`,
+`react-dom`, `tailwindcss`.
 
-### 1. Clone and Install
+## Quick start
+
+Requirements: **Node.js 20+** and **npm**.
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/amar-career.git
+# 1. Clone
+git clone https://github.com/shahajalal-mahmud/amar-career.git
 cd amar-career
 
-# Install dependencies
+# 2. Install
 npm install
 
-# Install Firebase SDK
-npm install firebase
-```
+# 3. Configure Firebase (see next section)
+cp .env.example .env
+# …edit .env with your Firebase web-app config…
 
----
-
-### 2. Set Up Firebase
-
-**Step 1 — Create a Firebase Project**
-
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Click **Add project** → give it a name (e.g. `amar-career`)
-3. Disable Google Analytics if you don't need it → **Create project**
-
-**Step 2 — Add a Web App**
-
-1. Inside your project, click the **</>** (Web) icon
-2. Register the app with a nickname (e.g. `amar-career-web`)
-3. Copy the `firebaseConfig` object shown — you'll need it in the next step
-
-**Step 3 — Create Firestore Database**
-
-1. In the left sidebar, go to **Build → Firestore Database**
-2. Click **Create database**
-3. Choose **Start in test mode** (allows read/write for 30 days — fine for personal use)
-4. Select any region close to you (e.g. `asia-south1` for Bangladesh)
-5. Click **Enable**
-
-**Step 4 — Configure Your App**
-
-Open `src/firebase.js` and replace the placeholder values:
-
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_ACTUAL_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
-};
-```
-
-> ⚠️ **Security Note**: This config is safe to include in a personal project. Firebase security rules protect your data. If you ever make this public, set up Firebase Authentication and proper Firestore rules.
-
----
-
-### 3. Run the App
-
-```bash
+# 4. Run the dev server
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open <http://localhost:5173>.
 
----
+## Firestore setup
 
-### 4. Build for Production
+You'll need a Firebase project. If you don't already have one:
+
+1. Go to <https://console.firebase.google.com> and create a project.
+2. In **Build → Firestore Database**, create a database. The default
+   **test mode** is fine for personal / local use (read [Security](#security)
+   before deploying anywhere public).
+3. In **Project settings → General → Your apps**, register a **Web app**.
+4. Copy the `firebaseConfig` object into your `.env` file using the keys
+   from `.env.example`:
+
+   ```
+   VITE_FIREBASE_API_KEY=...
+   VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your-project
+   VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+   VITE_FIREBASE_MESSAGING_SENDER_ID=...
+   VITE_FIREBASE_APP_ID=...
+   VITE_FIREBASE_MEASUREMENT_ID=...
+   ```
+
+5. Restart `npm run dev` after editing `.env`.
+
+The app will create the collections it needs (`jobs`, `companies`, `notes`,
+`profile/main`, `profileBlocks`) on first write.
+
+### Optional: seed legacy profile data
+
+If you're migrating from the old hardcoded profile (`src/data/Profile.js`),
+open the **Profile** page, click **Seed from old data**, then delete
+`src/data/Profile.js` and `src/utils/migrateProfile.js` once you're happy
+with the result. That path is a one-shot migration helper, not a permanent
+feature.
+
+## Project structure
+
+```
+src/
+  App.jsx                # page-switching shell + error boundary
+  main.jsx               # React entry point
+  firebase.js            # Firestore init
+  constants.js           # STATUS_TABS, STATUS_COLORS, statusStyle()
+  index.css              # Tailwind + design system + responsive rules
+  components/
+    JobCard.jsx          # single job card with status dropdown
+    JobForm.jsx          # add/edit job modal
+    Sidebar.jsx          # desktop + mobile nav
+    SaveErrorOverlay.jsx # inline save-error banner
+    ErrorBoundary.jsx    # per-page crash boundary
+  hooks/
+    useJobs.js           # jobs collection + CRUD + status updates
+    useCompanies.js      # companies collection + CRUD + check-in
+    useNotes.js          # notes collection + CRUD
+    useProfile.js        # profile/main doc + profileBlocks CRUD
+  pages/
+    Dashboard.jsx
+    Jobs.jsx
+    Companies.jsx
+    Notes.jsx
+    Profile.jsx
+    Analytics.jsx
+  utils/
+    markdown.js          # tiny regex-based markdown renderer
+    migrateProfile.js    # one-shot legacy profile seeder
+  data/
+    Profile.js           # legacy hardcoded profile (delete after seeding)
+```
+
+## Data model
+
+The single source of truth is [`Project.md`](./Project.md). Quick summary:
+
+```
+jobs/{jobId}
+  jobTitle, companyName, jobType, location, circularLink,
+  cvFileName, details (markdown), status,
+  createdAt, updatedAt
+
+companies/{companyId}
+  name, website, category, country, notes,
+  lastChecked, reviewCycle (7|15|30), createdAt, updatedAt
+
+notes/{noteId}
+  title, description (markdown), category (4 fixed values),
+  createdAt, updatedAt
+
+profile/main
+  name, title, location, links[], avatarInitials
+
+profileBlocks/{blockId}
+  section (7 fixed values), title, content (markdown), order,
+  createdAt, updatedAt
+```
+
+Statuses (jobs): `Saved` → `Applied` → `Shortlisted` → `Interview` → `Rejected` / `Accepted`.
+
+Note categories: `Tips`, `Interview Questions`, `Preparation Notes`,
+`Mistakes & Learnings`. These are intentionally fixed — see Project.md §4.3.
+
+Profile sections: `Personal Info`, `Skills`, `Experience`, `Education`,
+`Projects`, `Certifications`, `Achievements`.
+
+## Scripts
 
 ```bash
-npm run build
-npm run preview  # preview the production build locally
+npm run dev      # Vite dev server on :5173
+npm run build    # production build into dist/
+npm run preview  # serve the production build locally
+npm run lint     # ESLint over the whole project
 ```
 
----
+## Self-hosting notes
 
-## 📋 How to Use
+This repo only contains the source. To put a copy on the public internet
+you'd need to:
 
-### Adding a New Job
+1. `npm run build` to produce `dist/`.
+2. Host `dist/` somewhere static (any static host works — Netlify, Vercel,
+   Cloudflare Pages, GitHub Pages, an Nginx box, etc.). Configuration for
+   that is **not** included in this repo.
+3. **Add your own auth and lock down your Firestore rules before going
+   public.** The default test-mode rules allow anyone with your Firebase
+   config to read and write your entire database. See [Security](#security).
 
-1. Click **"Add Job"** from the Dashboard or Jobs page
-2. The multi-section form opens as a modal overlay
-3. Work through the 7 sections — fill in as much or as little as you have from the job circular:
+## Security
 
-| Section            | Key Fields                                                           |
-| ------------------ | -------------------------------------------------------------------- |
-| **Basic Info**     | Job title, company name, reference code, industry, source            |
-| **Overview**       | Job type (full-time/internship/etc.), location, vacancies            |
-| **Role Details**   | Responsibilities, KPIs, tools/software required                      |
-| **Qualifications** | Education, certifications, experience level, technical & soft skills |
-| **Compensation**   | Salary range, salary type                                            |
-| **Application**    | Deadline, submission method, required documents, apply link          |
-| **Selection**      | Screening steps, interview type, assessment details, personal notes  |
+Read [`SECURITY.md`](./SECURITY.md) before deploying this anywhere. The
+short version:
 
-4. At minimum, fill in **Job Title** and **Company Name** (required)
-5. Click **Save Job** on the last section — it saves to Firestore instantly
+- There is **no authentication** in this app. It is built for one user.
+- Firestore is intended to be used in **test mode** for personal use.
+- If you deploy this publicly without adding your own auth and rules, your
+  data is effectively public.
+- Never commit `.env`. It's already in `.gitignore`.
 
-> 💡 **Tip**: Copy-paste directly from the job circular into the textarea fields. No need to reformat — just paste and go.
+## Contributing
 
----
+This is a personal project. Read [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+before sending anything. The TL;DR is: fork it for your own use, send small
+fixes upstream if you find something genuinely broken, don't expect a fast
+review.
 
-### Changing Job Status
+## License
 
-**Method 1 — Status badge on job card**
-Click the colored status badge (e.g. `Saved`) on any job card. A dropdown appears. Select the new status. Updates instantly in Firestore.
+MIT — see [`LICENSE`](./LICENSE).
 
-**Method 2 — Edit the job**
-Click the ✏️ edit button on a job card → change status via the form → save.
+Copyright (c) 2026 Md Shahajalal Mahmud.
 
----
-
-### Editing a Job
-
-Click the **pencil icon** on any job card. The same multi-section form opens, pre-filled with all saved data. Make your changes and click **Save Changes**.
-
----
-
-### Deleting a Job
-
-Click the **trash icon** on any job card. A confirmation prompt appears. Confirm to permanently delete from Firestore.
-
----
-
-### Searching and Filtering
-
-- **Search bar** — searches across job title, company name, skills, industry, and location
-- **Source filter** — filter by where you found the job (LinkedIn, Bdjobs, etc.)
-- **Status tabs** — click any tab (Applied, Interview, etc.) to see only jobs in that stage
-
----
-
-## 🗃 Database Schema
-
-All data is stored as plain text in Firestore. No binary files, no attachments. The `jobs` collection has one document per job with this structure:
-
-```javascript
-// Firestore Collection: "jobs"
-// Document ID: auto-generated by Firestore
-
-{
-  // ── Metadata ──────────────────────────────────────
-  status:             "Saved",           // Saved | Applied | Shortlisted | Interview | Rejected | Accepted
-  createdAt:          Timestamp,         // Firestore server timestamp
-  updatedAt:          Timestamp,         // Firestore server timestamp
-
-  // ── Section 1: Basic Info ─────────────────────────
-  jobTitle:           "Software Engineer",
-  refCode:            "IT-2025-042",
-  companyName:        "bKash Limited",
-  companyLink:        "https://bkash.com",
-  industry:           "IT / Software",
-  jobSource:          "LinkedIn",
-
-  // ── Section 2: Overview ───────────────────────────
-  jobType:            "Full-time",
-  location:           "Dhaka, Bangladesh",
-  vacancies:          "3",
-
-  // ── Section 3: Role Details ───────────────────────
-  responsibilities:   "• Develop REST APIs\n• Write unit tests\n...",
-  kpis:               "Code review turnaround < 24hrs...",
-  projects:           "Mobile payment gateway, merchant dashboard",
-  tools:              "Jira, GitHub, Postman, Docker",
-
-  // ── Section 4: Qualifications ─────────────────────
-  education:          "BSc in CSE, CGPA min 3.0",
-  certifications:     "AWS Certified Developer (preferred)",
-  experienceLevel:    "Mid Level",
-  yearsExperience:    "2–4 years",
-  industryExperience: "Fintech",
-  technicalSkills:    "Python, Django, React, PostgreSQL, Redis",
-  softSkills:         "Problem solving, team collaboration",
-  languages:          "English (Fluent), Bengali (Native)",
-  computerLiteracy:   "MS Office, Google Workspace",
-
-  // ── Section 5: Compensation ───────────────────────
-  salaryRange:        "60,000–80,000 BDT/month",
-  salaryType:         "Gross",
-
-  // ── Section 6: Application Process ───────────────
-  deadline:           "2025-06-30",
-  applicationMethod:  "Email",
-  documentsRequired:  "CV, Cover Letter, Transcripts",
-  applicationFormat:  "PDF",
-  submissionLink:     "careers@bkash.com",
-
-  // ── Section 7: Selection Process ─────────────────
-  screeningSteps:     "CV Review → Written Test → Technical Interview → HR Round",
-  interviewType:      "In-person",
-  assessmentDetails:  "90-min test: Data Structures, System Design, SQL",
-  notes:              "Referred by a friend at bKash. Strong company culture."
-}
-```
-
----
-
-## 🎨 Design System
-
-The UI follows a **dark editorial** aesthetic — serious, organized, and personal.
-
-| Token              | Value                | Purpose                      |
-| ------------------ | -------------------- | ---------------------------- |
-| `--bg`             | `#0f1117`            | Main background              |
-| `--bg-surface`     | `#161b27`            | Sidebar background           |
-| `--bg-card`        | `#1c2235`            | Card backgrounds             |
-| `--accent`         | `#f59e0b`            | Amber — primary accent, CTAs |
-| `--text-primary`   | `#e8edf5`            | Main readable text           |
-| `--text-secondary` | `#8b97b8`            | Supporting text              |
-| `--text-muted`     | `#4a5578`            | Placeholder, hints           |
-| `--font-display`   | `Syne`               | Headings, labels, buttons    |
-| `--font-body`      | `DM Sans`            | Body text, inputs            |
-| `--font-bn`        | `Noto Serif Bengali` | Bengali script in logo       |
-
-**Status colors:**
-
-| Status      | Color              |
-| ----------- | ------------------ |
-| Saved       | `#94a3b8` (slate)  |
-| Applied     | `#60a5fa` (blue)   |
-| Shortlisted | `#fbbf24` (yellow) |
-| Interview   | `#34d399` (green)  |
-| Rejected    | `#f87171` (red)    |
-| Accepted    | `#a78bfa` (purple) |
-
----
-
-## 🗺 Roadmap
-
-### Phase 1 — Core (✅ Complete)
-
-- [x] Project structure and design system
-- [x] Sidebar navigation
-- [x] Dashboard with live stats and pipeline
-- [x] Job create/edit form (7 sections, 30+ fields)
-- [x] Job cards with status management
-- [x] Search, filter, and status tabs
-- [x] Firestore real-time integration
-
-### Phase 2 — Content (🔄 In Progress)
-
-- [ ] Profile page — personal info, skills, links, education
-- [ ] Notes page — interview questions, prep materials, learnings
-- [ ] Job detail view — full single-job expanded view
-- [ ] AI Analysis section — save ChatGPT/Gemini analysis results per job
-
-### Phase 3 — Intelligence (📅 Planned)
-
-- [ ] Analytics dashboard — charts, timeline, success rate
-- [ ] Application timeline view
-- [ ] Source effectiveness analysis (which platform gives best results)
-- [ ] Deadline calendar view
-- [ ] Export to CSV / PDF report
-
-### Phase 4 — Polish (📅 Planned)
-
-- [ ] Firebase Authentication (Google sign-in)
-- [ ] Proper Firestore security rules
-- [ ] Deploy to Vercel
-- [ ] PWA support (installable on Android)
-- [ ] Dark/light mode toggle
-
----
-
-## 🔒 Privacy & Security
-
-- This app is for **personal use only** — no multi-user system, no public access
-- Firebase is configured in **test mode** initially — update Firestore rules before any public deployment
-- No passwords, personal data, or sensitive financial information should be stored in plain text fields
-- The Firebase API key in `firebase.js` is safe to commit for personal projects; it is not a secret key
-
-**Recommended Firestore rules for personal use:**
-
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true; // Only safe on a private/personal project
-    }
-  }
-}
-```
-
----
-
-## 📦 Dependencies
-
-```json
-{
-  "dependencies": {
-    "firebase": "^11.x",
-    "react": "^19.x",
-    "react-dom": "^19.x",
-    "@tailwindcss/vite": "^4.x",
-    "tailwindcss": "^4.x"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^6.x",
-    "vite": "^8.x"
-  }
-}
-```
-
----
-
-## 🤝 Contributing
-
-This is a personal project and is not open for public contributions. If you want to build something similar for yourself, feel free to use this as inspiration or a starting point.
-
----
-
-## 📄 License
-
-This project is for personal use. No license is granted for redistribution or commercial use.
-
----
-
-## 👤 Author
-
-Built by a job seeker, for a job seeker — to stay organized, stay strategic, and track every step of the hunt.
-
-> _"The job hunt is hard enough. At least let the tracking be easy."_
-
----
-
-<div align="center">
-  <p>আমার ক্যারিয়ার &mdash; Amar Career</p>
-  <p><sub>Built with React · Firebase · Tailwind · Vite</sub></p>
-</div>
+You are free to clone, modify, and run your own copy, including for
+commercial purposes. Attribution is appreciated but not required beyond
+keeping the copyright notice in substantial copies of the source.
