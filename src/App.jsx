@@ -36,7 +36,6 @@ export default function App() {
         currentPage={currentPage}
         onNavigate={navigate}
         isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
       />
 
       <main className="main-content">

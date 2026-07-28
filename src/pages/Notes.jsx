@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useNotes } from '../hooks/useNotes'
-import { renderMarkdown } from '../components/JobForm'
+import { renderMarkdown } from '../utils/markdown'
+import SaveErrorOverlay from '../components/SaveErrorOverlay'
 
 /* ── Fixed categories — exactly these 4 per project.md §4.3 ── */
 const NOTE_CATEGORIES = [
@@ -528,15 +529,17 @@ export default function Notes() {
   const [formOpen, setFormOpen] = useState(false)
   const [editNote, setEditNote] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
 
-  const openCreate = () => { setEditNote(null); setFormOpen(true) }
-  const openEdit   = (note) => { setEditNote(note); setFormOpen(true) }
-  const closeForm  = () => { setFormOpen(false); setEditNote(null) }
+  const openCreate = () => { setEditNote(null); setSaveError(null); setFormOpen(true) }
+  const openEdit   = (note) => { setEditNote(note); setSaveError(null); setFormOpen(true) }
+  const closeForm  = () => { setFormOpen(false); setEditNote(null); setSaveError(null) }
 
   const handleSave = async (formData) => {
     setIsSaving(true)
+    setSaveError(null)
     try {
       if (editNote) {
         await updateNote(editNote.id, formData)
@@ -546,7 +549,7 @@ export default function Notes() {
       closeForm()
     } catch (err) {
       console.error('Save failed:', err)
-      alert('Failed to save. Check your Firebase config and Firestore rules.')
+      setSaveError('Failed to save. Check your Firebase config and Firestore rules.')
     } finally {
       setIsSaving(false)
     }
@@ -578,6 +581,7 @@ export default function Notes() {
 
   return (
     <>
+<SaveErrorOverlay message={saveError && formOpen ? saveError : null} />
       {formOpen && (
         <NoteForm
           initial={editNote}

@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { useJobs } from '../hooks/useJobs'
 import JobForm from '../components/JobForm'
 import JobCard from '../components/JobCard'
+import SaveErrorOverlay from '../components/SaveErrorOverlay'
 import { STATUS_TABS, STATUS_COLORS } from '../constants'
 
 export default function Jobs() {
@@ -10,15 +11,17 @@ export default function Jobs() {
   const [formOpen, setFormOpen] = useState(false)
   const [editJob, setEditJob]   = useState(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
   const [activeTab, setActiveTab] = useState('All')
   const [search, setSearch]     = useState('')
 
-  const openCreate = () => { setEditJob(null); setFormOpen(true) }
-  const openEdit   = (job) => { setEditJob(job); setFormOpen(true) }
-  const closeForm  = () => { setFormOpen(false); setEditJob(null) }
+  const openCreate = () => { setEditJob(null); setSaveError(null); setFormOpen(true) }
+  const openEdit   = (job) => { setEditJob(job); setSaveError(null); setFormOpen(true) }
+  const closeForm  = () => { setFormOpen(false); setEditJob(null); setSaveError(null) }
 
   const handleSave = async (formData) => {
     setIsSaving(true)
+    setSaveError(null)
     try {
       if (editJob) {
         await updateJob(editJob.id, formData)
@@ -28,7 +31,7 @@ export default function Jobs() {
       closeForm()
     } catch (err) {
       console.error('Save failed:', err)
-      alert('Failed to save. Check your Firebase config and Firestore rules.')
+      setSaveError('Failed to save. Check your Firebase config and Firestore rules.')
     } finally {
       setIsSaving(false)
     }
@@ -64,6 +67,7 @@ export default function Jobs() {
 
   return (
     <>
+      <SaveErrorOverlay message={saveError && formOpen ? saveError : null} />
       {formOpen && (
         <JobForm
           initialData={editJob}

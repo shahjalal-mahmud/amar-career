@@ -270,10 +270,6 @@ function Select({ value, onChange, options, error }) {
    Modal shell (close-on-overlay-click + Esc)
    ───────────────────────────────────────────────────────────────────── */
 function Modal({ children, onClose, maxWidth = 640 }) {
-  // Esc to close
-  if (typeof window !== 'undefined') {
-    // useEffect-style escape handler is fine, but keep it simple
-  }
   return (
     <div
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
@@ -787,6 +783,7 @@ export default function Profile() {
   const [blockForm, setBlockForm]           = useState(null) // { open, initial, defaultSection, saving }
   const [allCopied, setAllCopied]           = useState(false)
   const [seeding, setSeeding]               = useState(false)
+  const [notice, setNotice]                 = useState(null) // { type: 'error' | 'success', message }
 
   /* ── Group blocks by section, sorted by order asc ── */
   const sectionsBlocks = useMemo(() => {
@@ -811,6 +808,7 @@ export default function Profile() {
   const handleBlockSave = async (formData) => {
     if (!blockForm) return
     setBlockForm((p) => ({ ...p, saving: true }))
+    setNotice(null)
     try {
       if (blockForm.initial) {
         await updateBlock(blockForm.initial.id, formData)
@@ -823,19 +821,20 @@ export default function Profile() {
       closeBlockForm()
     } catch (err) {
       console.error('Block save failed:', err)
-      alert('Failed to save block. Check your Firebase config.')
+      setNotice({ type: 'error', message: 'Failed to save block. Check your Firebase config.' })
       setBlockForm((p) => ({ ...p, saving: false }))
     }
   }
 
   const handleHeroSave = async (formData) => {
     setHeroSaving(true)
+    setNotice(null)
     try {
       await updateProfileMain(formData)
       setHeroFormOpen(false)
     } catch (err) {
       console.error('Hero save failed:', err)
-      alert('Failed to save hero. Check your Firebase config.')
+      setNotice({ type: 'error', message: 'Failed to save hero. Check your Firebase config.' })
     } finally {
       setHeroSaving(false)
     }
@@ -851,10 +850,14 @@ export default function Profile() {
     try {
       await navigator.clipboard.writeText(doc)
       setAllCopied(true)
+      setNotice(null)
       setTimeout(() => setAllCopied(false), 2000)
     } catch (err) {
       console.error('Clipboard failed:', err)
-      alert('Could not copy. See console for the markdown.')
+      setNotice({
+        type: 'error',
+        message: 'Could not copy. Markdown dumped to the browser console — copy it from there.',
+      })
       console.log(doc)
     }
   }
@@ -862,12 +865,16 @@ export default function Profile() {
   const handleSeed = async () => {
     if (!window.confirm('Seed profile data from the legacy Profile.js file into Firestore? This only needs to run once.')) return
     setSeeding(true)
+    setNotice(null)
     try {
       const result = await seedProfileToFirestore(db)
-      alert(`Seeded. Wrote ${result.blocksWritten} blocks. Verify on this page, then you may delete src/data/Profile.js manually.`)
+      setNotice({
+        type: 'success',
+        message: `Seeded. Wrote ${result.blocksWritten} blocks. Verify on this page, then you may delete src/data/Profile.js manually.`,
+      })
     } catch (err) {
       console.error('Seed failed:', err)
-      alert('Seeding failed. Check console and your Firebase config.')
+      setNotice({ type: 'error', message: 'Seeding failed. Check console and your Firebase config.' })
     } finally {
       setSeeding(false)
     }
@@ -920,6 +927,34 @@ export default function Profile() {
           </button>
         </div>
       </div>
+
+      {notice && (
+        <div
+          role="alert"
+          style={{
+            padding: '10px 16px', borderRadius: 9, fontSize: 13,
+            display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
+            background: notice.type === 'success'
+              ? 'rgba(52,211,153,0.1)'
+              : 'rgba(248,113,113,0.1)',
+            border: `1px solid ${notice.type === 'success'
+              ? 'rgba(52,211,153,0.3)'
+              : 'rgba(248,113,113,0.3)'}`,
+            color: notice.type === 'success' ? '#34d399' : '#f87171',
+          }}
+        >
+          <span style={{ flex: 1 }}>⚠ {notice.message}</span>
+          <button
+            type="button"
+            onClick={() => setNotice(null)}
+            aria-label="Dismiss"
+            style={{
+              background: 'transparent', border: 'none',
+              color: 'inherit', cursor: 'pointer', fontSize: 16, lineHeight: 1, padding: 0,
+            }}
+          >✕</button>
+        </div>
+      )}
 
       {/* ── Loading ── */}
       {loading && (

@@ -85,7 +85,7 @@ export function useProfile() {
       section: data.section,
       title:   data.title,
       content: data.content,
-      order:   typeof data.order === 'number' ? data.order : Date.now(),
+      order:   data.order,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }

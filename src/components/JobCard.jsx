@@ -1,16 +1,9 @@
 import { useState } from 'react'
-import { renderMarkdown } from './JobForm'
-import { statusStyle } from '../constants'
+import { renderMarkdown } from '../utils/markdown'
+import { statusStyle, STATUS_TABS } from '../constants'
 
-const STATUS = {
-  Saved:       statusStyle('Saved'),
-  Applied:     statusStyle('Applied'),
-  Shortlisted: statusStyle('Shortlisted'),
-  Interview:   statusStyle('Interview'),
-  Rejected:    statusStyle('Rejected'),
-  Accepted:    statusStyle('Accepted'),
-}
-const STATUSES = Object.keys(STATUS)
+/* Drop the "All" entry — only statuses are valid for jobs. */
+const STATUSES = STATUS_TABS.filter((s) => s !== 'All')
 
 function formatDate(iso) {
   if (!iso) return null
@@ -50,7 +43,7 @@ const IconLink = () => (
 )
 
 export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
-  const color = STATUS[job.status] || STATUS.Saved
+  const color = statusStyle(job.status)
   const [statusOpen, setStatusOpen] = useState(false)
   const [expanded, setExpanded] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -269,7 +262,7 @@ export default function JobCard({ job, onEdit, onDelete, onStatusChange }) {
                     <div style={{ position: 'fixed', inset: 0, zIndex: 99 }} onClick={() => setStatusOpen(false)} />
                     <div className="status-dropdown" style={{ zIndex: 100 }}>
                       {STATUSES.map(s => {
-                        const c = STATUS[s]
+                        const c = statusStyle(s)
                         return (
                           <button
                             key={s}

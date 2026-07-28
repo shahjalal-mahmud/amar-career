@@ -78,7 +78,7 @@ const NAV_ITEMS = [
   },
 ]
 
-export default function Sidebar({ currentPage, onNavigate, isOpen, onClose }) {
+export default function Sidebar({ currentPage, onNavigate, isOpen }) {
   return (
     <aside className={`sidebar ${isOpen ? 'sidebar--open' : ''}`}>
       {/* Logo */}

@@ -1,15 +1,7 @@
 import { useMemo } from 'react'
 import { useJobs } from '../hooks/useJobs'
+import { STATUS_COLORS } from '../constants'
 
-/* ── Status enum + colors (mirrors Dashboard) ── */
-const STATUS_COLORS = {
-  Saved:       '#94a3b8',
-  Applied:     '#60a5fa',
-  Shortlisted: '#fbbf24',
-  Interview:   '#34d399',
-  Rejected:    '#f87171',
-  Accepted:    '#a78bfa',
-}
 const STATUSES = Object.keys(STATUS_COLORS)
 
 /* "—" when denom is 0, otherwise rounded percent. Matches Dashboard's

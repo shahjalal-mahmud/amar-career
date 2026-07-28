@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useCompanies } from '../hooks/useCompanies'
+import SaveErrorOverlay from '../components/SaveErrorOverlay'
 
 /* ─── Default job portals (always shown, not editable from this page) ─── */
 const JOB_PORTALS = [
@@ -15,8 +16,8 @@ const JOB_PORTALS = [
   { name: 'AngelList',      url: 'https://wellfound.com/jobs',      flag: '🌐', desc: 'Startup ecosystem jobs' },
 ]
 
-/* ─── Tag color map ─── */
-const TAG_COLORS = {
+/* ─── Category color map (spec §4.2: `category` is the Firestore field) ─── */
+const CATEGORY_COLORS = {
   'Software':    { bg: 'rgba(99,102,241,0.12)',  text: '#818cf8', border: 'rgba(99,102,241,0.25)' },
   'IT':          { bg: 'rgba(59,130,246,0.12)',  text: '#60a5fa', border: 'rgba(59,130,246,0.25)' },
   'Startup':     { bg: 'rgba(251,146,60,0.12)',  text: '#fb923c', border: 'rgba(251,146,60,0.25)' },
@@ -29,14 +30,15 @@ const TAG_COLORS = {
   'Media':       { bg: 'rgba(236,72,153,0.12)',  text: '#ec4899', border: 'rgba(236,72,153,0.25)' },
   'Other':       { bg: 'rgba(255,255,255,0.06)', text: '#9ca3af', border: 'rgba(255,255,255,0.1)' },
 }
-const TAG_LIST = Object.keys(TAG_COLORS)
+const CATEGORIES = Object.keys(CATEGORY_COLORS)
 
-const REVIEW_CYCLES = ['7 days', '15 days', '30 days']
+/* spec §4.2: `reviewCycle` is a number (7/15/30 days) */
+const REVIEW_CYCLE_OPTIONS = [7, 15, 30]
 const COUNTRIES = ['Bangladesh', 'Remote', 'USA', 'UK', 'Canada', 'Australia', 'Germany', 'Singapore', 'UAE', 'India', 'Other']
 
 const EMPTY_FORM = {
-  name: '', website: '', tagline: '', tag: 'Software',
-  country: 'Bangladesh', reviewCycle: '15 days', notes: '',
+  name: '', website: '', tagline: '', category: 'Software',
+  country: 'Bangladesh', reviewCycle: 15, notes: '',
 }
 
 /* ─── Helpers ─── */
@@ -44,24 +46,19 @@ function getInitials(name) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
 }
 
-function tagColor(tag) {
-  return TAG_COLORS[tag] || TAG_COLORS['Other']
+function categoryColor(category) {
+  return CATEGORY_COLORS[category] || CATEGORY_COLORS['Other']
 }
 
 function daysUntilNextReview(lastChecked, cycleDays) {
   if (!lastChecked) return null
   const next = new Date(lastChecked)
   next.setDate(next.getDate() + cycleDays)
-  const diff = Math.ceil((next - new Date()) / 86400000)
-  return diff
-}
-
-function cycleToNum(cycle) {
-  return parseInt(cycle) || 15
+  return Math.ceil((next - new Date()) / 86400000)
 }
 
 function ReviewBadge({ lastChecked, reviewCycle }) {
-  const days = daysUntilNextReview(lastChecked, cycleToNum(reviewCycle || '15 days'))
+  const days = daysUntilNextReview(lastChecked, reviewCycle || 15)
   if (!lastChecked) return <span style={badgeStyle('#6b7280', 'rgba(107,114,128,0.1)', 'rgba(107,114,128,0.2)')}>Never checked</span>
   if (days <= 0) return <span style={badgeStyle('#f87171', 'rgba(248,113,113,0.1)', 'rgba(248,113,113,0.25)')}>⚠ Check now</span>
   if (days <= 3) return <span style={badgeStyle('#fbbf24', 'rgba(251,191,36,0.1)', 'rgba(251,191,36,0.25)')}>Due in {days}d</span>
@@ -77,7 +74,7 @@ function badgeStyle(text, bg, border) {
 }
 
 /* ─── Company form modal ─── */
-function CompanyForm({ initial, onSave, onCancel, isSaving }) {
+function CompanyForm({ initial, onSave, onCancel, isSaving, saveError }) {
   const [form, setForm] = useState(initial ? { ...EMPTY_FORM, ...initial } : EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const set = (k) => (v) => setForm(p => ({ ...p, [k]: v }))
@@ -112,6 +109,7 @@ function CompanyForm({ initial, onSave, onCancel, isSaving }) {
         .cf-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#9ca3af;margin-bottom:5px}
         .cf-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid rgba(255,255,255,0.07)}
         .cf-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07)}
+        .cf-error-bar{margin:0 20px;padding:10px 14px;border-radius:9px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:13px;flex-shrink:0;display:flex;align-items:center;gap:8px}
         .tag-grid{display:flex;flex-wrap:wrap;gap:6px}
         .tag-chip{padding:4px 10px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
         .cf-select{width:100%;padding:9px 12px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:9px;color:#f9fafb;font-size:14px;font-family:inherit;outline:none;appearance:none;backgroundImage:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:15px;padding-right:32px;cursor:pointer}
@@ -131,6 +129,10 @@ function CompanyForm({ initial, onSave, onCancel, isSaving }) {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
+
+          {saveError && (
+            <div className="cf-error-bar">⚠ {saveError}</div>
+          )}
 
           <div className="cf-body">
             <div className="cf-row">
@@ -154,18 +156,18 @@ function CompanyForm({ initial, onSave, onCancel, isSaving }) {
             <div>
               <div className="cf-label">Category</div>
               <div className="tag-grid">
-                {TAG_LIST.map(t => {
-                  const c = tagColor(t)
-                  const active = form.tag === t
+                {CATEGORIES.map(cat => {
+                  const c = categoryColor(cat)
+                  const active = form.category === cat
                   return (
-                    <button key={t} className="tag-chip"
+                    <button key={cat} className="tag-chip"
                       style={{
                         background: active ? c.bg : 'transparent',
                         color: active ? c.text : '#6b7280',
                         borderColor: active ? c.border : 'rgba(255,255,255,0.08)',
                       }}
-                      onClick={() => set('tag')(t)}
-                    >{t}</button>
+                      onClick={() => set('category')(cat)}
+                    >{cat}</button>
                   )
                 })}
               </div>
@@ -180,8 +182,8 @@ function CompanyForm({ initial, onSave, onCancel, isSaving }) {
               </div>
               <div>
                 <div className="cf-label">Review Cycle</div>
-                <select className="cf-select" value={form.reviewCycle} onChange={e => set('reviewCycle')(e.target.value)}>
-                  {REVIEW_CYCLES.map(r => <option key={r} value={r}>{r}</option>)}
+                <select className="cf-select" value={form.reviewCycle} onChange={e => set('reviewCycle')(Number(e.target.value))}>
+                  {REVIEW_CYCLE_OPTIONS.map(d => <option key={d} value={d}>{d} days</option>)}
                 </select>
               </div>
             </div>
@@ -213,7 +215,7 @@ function CompanyForm({ initial, onSave, onCancel, isSaving }) {
 /* ─── Company card ─── */
 function CompanyCard({ company, onEdit, onDelete, onCheckIn }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const tc = tagColor(company.tag)
+  const tc = categoryColor(company.category)
   const initials = getInitials(company.name)
 
   return (
@@ -244,10 +246,7 @@ function CompanyCard({ company, onEdit, onDelete, onCheckIn }) {
               fontSize: 14, fontWeight: 800, color: tc.text, letterSpacing: '.03em',
               overflow: 'hidden',
             }}>
-              {company.logoUrl
-                ? <img src={company.logoUrl} alt={company.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                : initials
-              }
+              {initials}
             </div>
             <div style={{ minWidth: 0 }}>
               <div style={{ fontWeight: 700, fontSize: 15, color: '#f9fafb', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -296,7 +295,7 @@ function CompanyCard({ company, onEdit, onDelete, onCheckIn }) {
 
         {/* Badges row */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 12, alignItems: 'center' }}>
-          <span style={{ ...badgeStyle(tc.text, tc.bg, tc.border) }}>{company.tag}</span>
+          {company.category && <span style={{ ...badgeStyle(tc.text, tc.bg, tc.border) }}>{company.category}</span>}
           {company.country && <span style={{ fontSize: 11, color: '#6b7280', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: '2px 8px' }}>📍 {company.country}</span>}
           <span style={{ marginLeft: 'auto' }}>
             <ReviewBadge lastChecked={company.lastChecked} reviewCycle={company.reviewCycle} />
@@ -362,27 +361,29 @@ function PortalCard({ portal }) {
 
 /* ─── Main page ─── */
 export default function Companies() {
-  const { companies, loading, createCompany, updateCompany, deleteCompany } = useCompanies()
+  const { companies, loading, error, createCompany, updateCompany, markCompanyChecked, deleteCompany } = useCompanies()
   const [formOpen, setFormOpen] = useState(false)
   const [editCompany, setEditCompany] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
   const [search, setSearch] = useState('')
-  const [filterTag, setFilterTag] = useState('All')
+  const [filterCategory, setFilterCategory] = useState('All')
   const [filterCountry, setFilterCountry] = useState('All')
 
-  const openCreate = () => { setEditCompany(null); setFormOpen(true) }
-  const openEdit = (c) => { setEditCompany(c); setFormOpen(true) }
-  const closeForm = () => { setFormOpen(false); setEditCompany(null) }
+  const openCreate = () => { setEditCompany(null); setSaveError(null); setFormOpen(true) }
+  const openEdit = (c) => { setEditCompany(c); setSaveError(null); setFormOpen(true) }
+  const closeForm = () => { setFormOpen(false); setEditCompany(null); setSaveError(null) }
 
   const handleSave = async (data) => {
     setIsSaving(true)
+    setSaveError(null)
     try {
       if (editCompany) await updateCompany(editCompany.id, data)
       else await createCompany(data)
       closeForm()
     } catch (err) {
       console.error(err)
-      alert('Failed to save. Check Firebase config.')
+      setSaveError('Failed to save. Check your Firebase config and Firestore rules.')
     } finally {
       setIsSaving(false)
     }
@@ -394,11 +395,14 @@ export default function Companies() {
   }
 
   const handleCheckIn = async (id) => {
-    await updateCompany(id, { lastChecked: new Date().toISOString() })
+    await markCompanyChecked(id)
   }
 
   /* Derived filter lists */
-  const usedTags = useMemo(() => ['All', ...TAG_LIST.filter(t => companies.some(c => c.tag === t))], [companies])
+  const usedCategories = useMemo(
+    () => ['All', ...CATEGORIES.filter(cat => companies.some(c => c.category === cat))],
+    [companies]
+  )
   const usedCountries = useMemo(() => {
     const s = new Set(companies.map(c => c.country).filter(Boolean))
     return ['All', ...Array.from(s).sort()]
@@ -408,15 +412,15 @@ export default function Companies() {
     return companies.filter(c => {
       const q = search.toLowerCase()
       const matchSearch = !q || c.name?.toLowerCase().includes(q) || c.tagline?.toLowerCase().includes(q) || c.notes?.toLowerCase().includes(q)
-      const matchTag = filterTag === 'All' || c.tag === filterTag
-      const matchCountry = filterCountry === 'All' || c.country === filterCountry
-      return matchSearch && matchTag && matchCountry
+      const matchCategory = filterCategory === 'All' || c.category === filterCategory
+      const matchCountry   = filterCountry === 'All'   || c.country   === filterCountry
+      return matchSearch && matchCategory && matchCountry
     })
-  }, [companies, search, filterTag, filterCountry])
+  }, [companies, search, filterCategory, filterCountry])
 
   /* Stats */
   const dueNow = companies.filter(c => {
-    const d = daysUntilNextReview(c.lastChecked, cycleToNum(c.reviewCycle || '15 days'))
+    const d = daysUntilNextReview(c.lastChecked, c.reviewCycle || 15)
     return d !== null && d <= 0
   }).length
 
@@ -495,8 +499,11 @@ export default function Companies() {
           onSave={handleSave}
           onCancel={closeForm}
           isSaving={isSaving}
+          saveError={saveError}
         />
       )}
+
+      <SaveErrorOverlay message={error ? `Couldn't load companies: ${error}` : null} />
 
       <div className="companies-page">
 
@@ -566,8 +573,8 @@ export default function Companies() {
                 </div>
               </div>
               <div className="filter-bar">
-                {usedTags.map(t => (
-                  <button key={t} className={`filter-chip ${filterTag === t ? 'filter-chip--active' : ''}`} onClick={() => setFilterTag(t)}>{t}</button>
+                {usedCategories.map(cat => (
+                  <button key={cat} className={`filter-chip ${filterCategory === cat ? 'filter-chip--active' : ''}`} onClick={() => setFilterCategory(cat)}>{cat}</button>
                 ))}
               </div>
               {usedCountries.length > 2 && (

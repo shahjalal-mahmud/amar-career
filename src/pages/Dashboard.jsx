@@ -1,11 +1,8 @@
 import { useState } from 'react'
 import { useJobs } from '../hooks/useJobs'
 import JobForm from '../components/JobForm'
-
-const STATUS_COLORS = {
-  Saved: '#94a3b8', Applied: '#60a5fa', Shortlisted: '#fbbf24',
-  Interview: '#34d399', Rejected: '#f87171', Accepted: '#a78bfa',
-}
+import SaveErrorOverlay from '../components/SaveErrorOverlay'
+import { STATUS_COLORS } from '../constants'
 
 function formatDate(iso) {
   if (!iso) return ''
@@ -17,14 +14,16 @@ export default function Dashboard({ onNavigate }) {
 
   const [formOpen, setFormOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
 
   const handleSave = async (formData) => {
     setIsSaving(true)
+    setSaveError(null)
     try {
       await createJob(formData)
       setFormOpen(false)
-    } catch (err) {
-      alert('Failed to save. Check your Firebase config.')
+    } catch {
+      setSaveError('Failed to save. Check your Firebase config.')
     } finally {
       setIsSaving(false)
     }
@@ -53,11 +52,12 @@ export default function Dashboard({ onNavigate }) {
 
   return (
     <>
+      <SaveErrorOverlay message={saveError && formOpen ? saveError : null} />
       {formOpen && (
         <JobForm
           initialData={null}
           onSave={handleSave}
-          onCancel={() => setFormOpen(false)}
+          onCancel={() => { setFormOpen(false); setSaveError(null) }}
           isSaving={isSaving}
         />
       )}
